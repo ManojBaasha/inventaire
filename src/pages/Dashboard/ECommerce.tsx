@@ -34,6 +34,12 @@ const ECommerce: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchData(); // Fetch data when the component mounts
+    const intervalId = setInterval(fetchData, 1000); // Fetch data every 60 seconds (adjust as needed)
+    return () => clearInterval(intervalId); // Cleanup function to clear interval on unmount
+  }, []); // Empty dependency array to only run once when the component mounts
+
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -143,23 +149,6 @@ const ECommerce: React.FC = () => {
         <ChatCard />
       </div>
     </DefaultLayout>
-  );
-};
-
-const VideoRecordingsList = ({ videoRecordings }) => {
-  return (
-    <div className="col-span-12 xl:col-span-4">
-      <h2 className="text-lg font-semibold mb-4">Video Recordings</h2>
-      <div className="overflow-auto max-h-80">
-        <ul>
-          {videoRecordings.map((recording, index) => (
-            <li key={index} className="py-2">
-              <video src={recording.url} controls className="w-full" />
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
   );
 };
 
