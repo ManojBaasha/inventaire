@@ -9,40 +9,186 @@ import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
 import axios from 'axios';
 
+import {
+  ObjectDetector,
+  FilesetResolver,
+  Detection,
+  ObjectDetectionResult,
+} from '@mediapipe/tasks-vision';
+
 const ECommerce: React.FC = () => {
-  const [imageData, setImageData] = useState(null);
-  const [error, setError] = useState(null);
+  const [objectDetector, setObjectDetector] = useState(null);
+  const [runningMode, setRunningMode] = useState('IMAGE');
 
   useEffect(() => {
-    // Function to fetch image data from the backend
-    const fetchImageData = async () => {
-      try {
-        // Make a GET request to fetch image data from the backend
-        const response = await axios.get(
-          'https://backend-ka1k.onrender.com/image',
-        );
-
-        // Check if the request was successful
-        if (response.data.success) {
-          // Set the image data in the state
-          setImageData(response.data.imageData);
-          setError(null);
-        } else {
-          // If the request was not successful, set the error message
-          setError(response.data.message);
-        }
-      } catch (error) {
-        // If an error occurred during the request, set the error message
-        setError('An error occurred while fetching image data.');
-      }
+    const initializeObjectDetector = async () => {
+      const vision = await FilesetResolver.forVisionTasks(
+        'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.2/wasm',
+      );
+      const detector = await ObjectDetector.createFromOptions(vision, {
+        baseOptions: {
+          modelAssetPath: `https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/1/efficientdet_lite0.tflite`,
+          delegate: 'GPU',
+        },
+        scoreThreshold: 0.5,
+        runningMode: runningMode,
+      });
+      setObjectDetector(detector);
     };
+    initializeObjectDetector();
+  }, [runningMode]);
 
-    // Call the function to fetch image data every second
-    const intervalId = setInterval(fetchImageData, 1000);
+  const handleClick = async (event) => {
+    const highlighters =
+      event.target.parentNode.getElementsByClassName('highlighter');
+    while (highlighters[0]) {
+      highlighters[0].parentNode.removeChild(highlighters[0]);
+    }
+    const infos = event.target.parentNode.getElementsByClassName('info');
+    while (infos[0]) {
+      infos[0].parentNode.removeChild(infos[0]);
+    }
+    if (!objectDetector) {
+      alert('Object Detector is still loading. Please try again.');
+      return;
+    }
+    if (runningMode === 'VIDEO') {
+      setRunningMode('IMAGE');
+      await objectDetector.setOptions({ runningMode: 'IMAGE' });
+    }
+    const ratio = event.target.height / event.target.naturalHeight;
+    const detections = await objectDetector.detect(event.target);
+    displayImageDetections(detections, event.target, ratio);
+  };
 
-    // Clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, []);
+  const displayImageDetections = (result, resultElement, ratio) => {
+    for (let detection of result.detections) {
+      const p = document.createElement('p');
+      p.setAttribute('class', 'info');
+      p.innerText =
+        detection.categories[0].categoryName +
+        ' - with ' +
+        Math.round(parseFloat(detection.categories[0].score) * 100) +
+        '% confidence.';
+      p.style =
+        'left: ' +
+        detection.boundingBox.originX * ratio +
+        'px;' +
+        'top: ' +
+        detection.boundingBox.originY * ratio +
+        'px; ' +
+        'width: ' +
+        (detection.boundingBox.width * ratio - 10) +
+        'px;';
+      const highlighter = document.createElement('div');
+      highlighter.setAttribute('class', 'highlighter');
+      highlighter.style =
+        'left: ' +
+        detection.boundingBox.originX * ratio +
+        'px;' +
+        'top: ' +
+        detection.boundingBox.originY * ratio +
+        'px;' +
+        'width: ' +
+        detection.boundingBox.width * ratio +
+        'px;' +
+        'height: ' +
+        detection.boundingBox.height * ratio +
+        'px;';
+      resultElement.parentNode.appendChild(highlighter);
+      resultElement.parentNode.appendChild(p);
+    }
+  };
+
+  const enableCam = async (event) => {
+    if (!objectDetector) {
+      console.log('Wait! objectDetector not loaded yet.');
+      return;
+    }
+    event.target.classList.add('removed');
+    const constraints = {
+      video: true,
+    };
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then(function (stream) {
+        document.getElementById('webcam').srcObject = stream;
+        document
+          .getElementById('webcam')
+          .addEventListener('loadeddata', predictWebcam);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  let lastVideoTime = -1;
+  const predictWebcam = async () => {
+    if (runningMode === 'IMAGE') {
+      setRunningMode('VIDEO');
+      await objectDetector.setOptions({ runningMode: 'VIDEO' });
+    }
+    let startTimeMs = performance.now();
+    if (document.getElementById('webcam').currentTime !== lastVideoTime) {
+      lastVideoTime = document.getElementById('webcam').currentTime;
+      const detections = await objectDetector.detectForVideo(
+        document.getElementById('webcam'),
+        startTimeMs,
+      );
+      displayVideoDetections(detections);
+    }
+    window.requestAnimationFrame(predictWebcam);
+  };
+
+  const displayVideoDetections = (result) => {
+    const liveView = document.getElementById('liveView');
+    const children = [];
+    for (let child of liveView.children) {
+      children.push(child);
+    }
+    for (let child of children) {
+      liveView.removeChild(child);
+    }
+    for (let detection of result.detections) {
+      const p = document.createElement('p');
+      p.innerText =
+        detection.categories[0].categoryName +
+        ' - with ' +
+        Math.round(parseFloat(detection.categories[0].score) * 100) +
+        '% confidence.';
+      p.style =
+        'left: ' +
+        (document.getElementById('webcam').offsetWidth -
+          detection.boundingBox.width -
+          detection.boundingBox.originX) +
+        'px;' +
+        'top: ' +
+        detection.boundingBox.originY +
+        'px; ' +
+        'width: ' +
+        (detection.boundingBox.width - 10) +
+        'px;';
+      const highlighter = document.createElement('div');
+      highlighter.setAttribute('class', 'highlighter');
+      highlighter.style =
+        'left: ' +
+        (document.getElementById('webcam').offsetWidth -
+          detection.boundingBox.width -
+          detection.boundingBox.originX) +
+        'px;' +
+        'top: ' +
+        detection.boundingBox.originY +
+        'px;' +
+        'width: ' +
+        (detection.boundingBox.width - 10) +
+        'px;' +
+        'height: ' +
+        detection.boundingBox.height +
+        'px;';
+      liveView.appendChild(highlighter);
+      liveView.appendChild(p);
+    }
+  };
 
   return (
     <DefaultLayout>
@@ -134,13 +280,58 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
       </div>
 
-      {error ? (
-        <p>{error}</p>
-      ) : imageData ? (
-        <img src={imageData} alt="Received Image" />
-      ) : (
-        <p>Loading image...</p>
-      )}
+      <section id="demos" className="invisible">
+        <h1>
+          Multiple object detection using the MediaPipe Object Detector task
+        </h1>
+        <h2>Demo: Detecting Images</h2>
+        <p>
+          <b>Click on an image below</b> to detect objects in the image.
+        </p>
+        <div className="detectOnClick">
+          <img
+            src="https://assets.codepen.io/9177687/coupledog.jpeg"
+            width="100%"
+            alt="Couple with dog"
+            onClick={handleClick}
+          />
+        </div>
+        <div className="detectOnClick">
+          <img
+            src="https://assets.codepen.io/9177687/doggo.jpeg"
+            width="100%"
+            alt="Dog"
+            onClick={handleClick}
+          />
+        </div>
+        <h2>Demo: Webcam continuous detection</h2>
+        <p>
+          Hold some objects up close to your webcam to get a real-time
+          detection! When ready click "enable webcam" below and accept access to
+          the webcam.
+        </p>
+        <div>
+          This demo uses a model trained on the COCO dataset. It can identify 80
+          different classes of object in an image.{' '}
+          <a
+            href="https://github.com/amikelive/coco-labels/blob/master/coco-labels-2014_2017.txt"
+            target="_blank"
+          >
+            See a list of available classes
+          </a>
+        </div>
+        <div id="liveView" className="videoView">
+          <button
+            id="webcamButton"
+            className="mdc-button mdc-button--raised"
+            onClick={enableCam}
+          >
+            <span className="mdc-button__ripple"></span>
+            <span className="mdc-button__label">ENABLE WEBCAM</span>
+          </button>
+          <video id="webcam" autoPlay playsInline></video>
+        </div>
+      </section>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
