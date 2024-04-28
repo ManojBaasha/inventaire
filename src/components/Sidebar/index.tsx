@@ -63,44 +63,40 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
-
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         {/* <!-- Sidebar Menu --> */}
         <nav className="py-1">
           {/* <!-- Menu Group --> */}
           <div>
-            <ul className="mb-6 flex flex-col gap-1.5">
-            {/* <!-- Menu Item Profile --> */}
-              <li>
-                <NavLink
-                  to="/"
-                  className={`group relative flex justify-center gap-2.5 rounded-sm py-6 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4`}
-                >
-                  <CircleUserRound className={'w-8 h-8'}/>
-                </NavLink>
-              </li>
-            </ul>
             <ul className="mb-6 flex flex-col gap-5">
-                {/* <!-- Menu Item Profile --> */}
+              {/* <!-- Menu Item Profile --> */}
               <li>
                 <NavLink
                   to="/"
                   className={`group relative flex justify-center gap-2.5 rounded-sm py-6 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4`}
                 >
-                  <Home className={'w-7 h-7'}/>
+                  <Home className={'w-7 h-7'} />
                 </NavLink>
               </li>
 
               {/* <!-- Menu Item Profile --> */}
               <li>
                 <NavLink
-                  to="/profile"
+                  to="/settings"
                   className={`group relative flex justify-center gap-2.5 rounded-sm py-6 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4
                   }`}
-                                      // className={`group relative flex justify-center gap-2.5 rounded-sm py-6 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    //   pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
+                  // className={`group relative flex justify-center gap-2.5 rounded-sm py-6 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                  //   pathname.includes('profile') && 'bg-graydark dark:bg-meta-4'
                 >
-                  <Camera className={'w-7 h-7'}/>
+                  <Camera className={'w-7 h-7'} />
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/profile"
+                  className={`group relative flex justify-center gap-2.5 rounded-sm py-6 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4`}
+                >
+                  <CircleUserRound className={'w-8 h-8'} />
                 </NavLink>
               </li>
             </ul>

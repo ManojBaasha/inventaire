@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
+import Camera from './pages/Camera';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -90,7 +91,7 @@ function App() {
           element={
             <>
               <PageTitle title="Settings | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Settings />
+              <Camera />
             </>
           }
         />
