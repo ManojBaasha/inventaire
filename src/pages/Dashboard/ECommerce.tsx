@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
@@ -7,8 +7,33 @@ import ChatCard from '../../components/Chat/ChatCard';
 import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
+import axios from 'axios';
 
 const ECommerce: React.FC = () => {
+  const [imageData, setImageData] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // You can include any additional data in the request body if needed
+        body: JSON.stringify({ someData: 'Some additional data if needed' }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch image data');
+      }
+
+      const data = await response.json();
+      setImageData(data.imageData);
+    } catch (error) {
+      console.error('Error fetching image data:', error);
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
@@ -31,6 +56,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+
         <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
@@ -98,6 +124,14 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
       </div>
 
+      <button onClick={fetchData}>Fetch Image Data</button>
+      {imageData && (
+        <div>
+          <h2>Received Image Data:</h2>
+          <img src={imageData} alt="Received Image" />
+        </div>
+      )}
+
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
@@ -109,6 +143,23 @@ const ECommerce: React.FC = () => {
         <ChatCard />
       </div>
     </DefaultLayout>
+  );
+};
+
+const VideoRecordingsList = ({ videoRecordings }) => {
+  return (
+    <div className="col-span-12 xl:col-span-4">
+      <h2 className="text-lg font-semibold mb-4">Video Recordings</h2>
+      <div className="overflow-auto max-h-80">
+        <ul>
+          {videoRecordings.map((recording, index) => (
+            <li key={index} className="py-2">
+              <video src={recording.url} controls className="w-full" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 };
 
