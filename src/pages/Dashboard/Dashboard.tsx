@@ -1,52 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
-import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
-import ChartTwo from '../../components/Charts/ChartTwo';
-import ChatCard from '../../components/Chat/ChatCard';
-import MapOne from '../../components/Maps/MapOne';
-import TableOne from '../../components/Tables/TableOne';
+import LineChart from '../../components/Charts/LineChart';
+import PieChart from '../../components/Charts/PieChart';
+import TableOne from '../../components/Tables/TableTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import axios from 'axios';
 
 const ECommerce: React.FC = () => {
-  const [imageData, setImageData] = useState(null);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Function to fetch image data from the backend
-    const fetchImageData = async () => {
-      try {
-        // Make a GET request to fetch image data from the backend
-        const response = await axios.get(
-          'https://backend-ka1k.onrender.com/image',
-        );
-
-        // Check if the request was successful
-        if (response.data.success) {
-          // Set the image data in the state
-          setImageData(response.data.imageData);
-          setError(null);
-        } else {
-          // If the request was not successful, set the error message
-          setError(response.data.message);
-        }
-      } catch (error) {
-        // If an error occurred during the request, set the error message
-        setError('An error occurred while fetching image data.');
-      }
-    };
-
-    // Call the function to fetch image data every second
-    const intervalId = setInterval(fetchImageData, 1000);
-
-    // Clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
-  }, []);
-
+  
   return (
     <DefaultLayout>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
+
+      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
+        <PieChart />
+        <LineChart/>
+      </div>
+      <div>
+{/* 
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5 mt-8">
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
@@ -132,26 +105,11 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-      </div>
+      </div> */}
 
-      {error ? (
-        <p>{error}</p>
-      ) : imageData ? (
-        <img src={imageData} alt="Received Image" />
-      ) : (
-        <p>Loading image...</p>
-      )}
-
-      <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-        <MapOne />
-        <div className="col-span-12 xl:col-span-8">
           <TableOne />
         </div>
-        <ChatCard />
-      </div>
+      
     </DefaultLayout>
   );
 };

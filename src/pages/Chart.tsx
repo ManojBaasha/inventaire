@@ -1,7 +1,7 @@
 import React from 'react';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import ChartOne from '../components/Charts/ChartOne';
-import ChartThree from '../components/Charts/ChartThree';
+import ChartOne from '../components/Charts/LineChart';
+import ChartThree from '../components/Charts/PieChart';
 import ChartTwo from '../components/Charts/ChartTwo';
 import DefaultLayout from '../layout/DefaultLayout';
 
