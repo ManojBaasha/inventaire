@@ -11,34 +11,38 @@ import axios from 'axios';
 
 const ECommerce: React.FC = () => {
   const [imageData, setImageData] = useState(null);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('/api/image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // You can include any additional data in the request body if needed
-        body: JSON.stringify({ someData: 'Some additional data if needed' }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch image data');
-      }
-
-      const data = await response.json();
-      setImageData(data.imageData);
-    } catch (error) {
-      console.error('Error fetching image data:', error);
-    }
-  };
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchData(); // Fetch data when the component mounts
-    const intervalId = setInterval(fetchData, 1000); // Fetch data every 60 seconds (adjust as needed)
-    return () => clearInterval(intervalId); // Cleanup function to clear interval on unmount
-  }, []); // Empty dependency array to only run once when the component mounts
+    // Function to fetch image data from the backend
+    const fetchImageData = async () => {
+      try {
+        // Make a GET request to fetch image data from the backend
+        const response = await axios.get(
+          'https://backend-ka1k.onrender.com/image',
+        );
+
+        // Check if the request was successful
+        if (response.data.success) {
+          // Set the image data in the state
+          setImageData(response.data.imageData);
+          setError(null);
+        } else {
+          // If the request was not successful, set the error message
+          setError(response.data.message);
+        }
+      } catch (error) {
+        // If an error occurred during the request, set the error message
+        setError('An error occurred while fetching image data.');
+      }
+    };
+
+    // Call the function to fetch image data every second
+    const intervalId = setInterval(fetchImageData, 1000);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <DefaultLayout>
@@ -130,12 +134,12 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
       </div>
 
-      <button onClick={fetchData}>Fetch Image Data</button>
-      {imageData && (
-        <div>
-          <h2>Received Image Data:</h2>
-          <img src={imageData} alt="Received Image" />
-        </div>
+      {error ? (
+        <p>{error}</p>
+      ) : imageData ? (
+        <img src={imageData} alt="Received Image" />
+      ) : (
+        <p>Loading image...</p>
       )}
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
