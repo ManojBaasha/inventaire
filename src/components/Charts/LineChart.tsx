@@ -11,7 +11,7 @@ const options: ApexOptions = {
   colors: ['#3C50E0'],
   chart: {
     fontFamily: 'Satoshi, sans-serif',
-    height: 335,
+    height: 100,
     type: 'area',
     dropShadow: {
       enabled: true,
@@ -31,7 +31,7 @@ const options: ApexOptions = {
       breakpoint: 1024,
       options: {
         chart: {
-          height: 300,
+          height: 100,
         },
       },
     },
@@ -39,7 +39,7 @@ const options: ApexOptions = {
       breakpoint: 1366,
       options: {
         chart: {
-          height: 350,
+          height: 100,
         },
       },
     },
@@ -111,7 +111,7 @@ const options: ApexOptions = {
       },
     },
     min: 0,
-    max: 100,
+    max: 60,
   },
 };
 

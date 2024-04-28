@@ -2,7 +2,7 @@ import React from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import LineChart from '../../components/Charts/LineChart';
 import PieChart from '../../components/Charts/PieChart';
-import TableOne from '../../components/Tables/TableOne';
+import TableOne from '../../components/Tables/TableTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
@@ -103,7 +103,7 @@ const ECommerce: React.FC = () => {
       </div>
 
       <div className="mt-10">
-        <h2 className="text-title-md2 font-semibold text-black dark:text-white mb-6">
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white mb-6 ml-1">
           Inventory
         </h2>
           <TableOne />
