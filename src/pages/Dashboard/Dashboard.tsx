@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CardDataStats from '../../components/CardDataStats';
 import LineChart from '../../components/Charts/LineChart';
 import PieChart from '../../components/Charts/PieChart';
 import TableOne from '../../components/Tables/TableTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import axios from 'axios';
 
 const ECommerce: React.FC = () => {
+
+  
   return (
     <DefaultLayout>
 
@@ -14,6 +17,7 @@ const ECommerce: React.FC = () => {
         <PieChart />
         <LineChart/>
       </div>
+      <div>
 {/* 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5 mt-8">
         <CardDataStats title="Total views" total="$3.456K" rate="0.43%" levelUp>
@@ -35,6 +39,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
+
         <CardDataStats title="Total Profit" total="$45,2K" rate="4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
@@ -102,10 +107,6 @@ const ECommerce: React.FC = () => {
         </CardDataStats>
       </div> */}
 
-      <div className="mt-10">
-        <h2 className="text-title-md2 font-semibold text-black dark:text-white mb-6 ml-1">
-          Inventory
-        </h2>
           <TableOne />
         </div>
       
