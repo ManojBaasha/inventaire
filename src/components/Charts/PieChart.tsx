@@ -11,8 +11,8 @@ const options: ApexOptions = {
     fontFamily: 'Satoshi, sans-serif',
     type: 'donut',
   },
-  colors: ['#3C50E0', '#6577F3', '#8FD0EF', '#0FADCF'],
-  labels: ['Desktop', 'Tablet', 'Mobile', 'Unknown'],
+  colors: ['#81aae6', '#436ca8', '#294b7d', '#24303F'],
+  labels: ['Open space', 'Red Bull', 'Red Bull sugar-free', 'Misc.'],
   legend: {
     show: false,
     position: 'bottom',
@@ -75,7 +75,7 @@ const ChartThree: React.FC = () => {
           </div>
           <div className="col-span-2 flex flex-col align-center">
             <div className="justify-left">
-              <h1 className="text-6xl mt-8 font-semibold text-black dark:text-white">65%</h1>
+              <h1 className="text-6xl mt-16 font-semibold text-black dark:text-white">65%</h1>
               <p className="mt-1 text-lg">space available</p>
             </div>
           </div>
@@ -83,39 +83,39 @@ const ChartThree: React.FC = () => {
       </div>
 
       <div className="-mx-8 flex flex-wrap items-center justify-center gap-y-3">
-        <div className="sm:w-1/2 w-full mt-4 px-8">
+        <div className="sm:w-1/2 w-full mt-6 px-8">
           <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
+            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#81aae6]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Desktop </span>
-              <span> </span>
+              <span> Open space </span>
+              <span> 65% </span>
             </p>
           </div>
         </div>
         <div className="sm:w-1/2 w-full px-8">
           <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
+            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#436ca8]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Tablet </span>
-              <span> 34% </span>
+              <span> Red Bull </span>
+              <span> 20% </span>
             </p>
           </div>
         </div>
         <div className="sm:w-1/2 w-full px-8">
           <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
+            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#294b7d]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Mobile </span>
-              <span> 45% </span>
+              <span> Red Bull sugar-free </span>
+              <span> 10% </span>
             </p>
           </div>
         </div>
         <div className="sm:w-1/2 w-full px-8">
           <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
+            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#24303F]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> Unknown </span>
-              <span> 12% </span>
+              <span> Misc. </span>
+              <span> 5% </span>
             </p>
           </div>
         </div>
